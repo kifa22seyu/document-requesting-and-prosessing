@@ -1,3 +1,5 @@
+// File: index.js (Exact code from your last message)
+
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
@@ -19,6 +21,7 @@ const userRoutes = require("./routes/userRoutes");
 const adminCrudRoutes = require("./routes/adminRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
 const settingRoutes = require("./routes/settingRoutes");
+const messageRoutes = require("./routes/message.routes");
 
 // --- Import Middleware ---
 const authMiddleware = require("./middleware/authMiddleware");
@@ -130,6 +133,7 @@ app.use("/api/student-information", studentInformationRoutes);
 app.use("/api/request-form", requestFormRoutes);
 app.use("/api/delivery-method", deliveryMethodRoutes);
 app.use("/api/graduation-verification", graduationVerificationFormRoutes);
+app.use("/api/message", messageRoutes);
 
 // Example protected route (kept for reference)
 app.get("/protected", authMiddleware, (req, res) => {
