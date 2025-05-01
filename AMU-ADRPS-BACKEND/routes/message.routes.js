@@ -1,56 +1,41 @@
-// File: routes/messageRoutes.js
-
 const express = require('express');
-const { param, validationResult } = require('express-validator');
-const mongoose = require('mongoose');
-
-// --- THIS IS THE CORRECTED REQUIRE STATEMENT ---
-// It points to the ACTUAL filename 'message.controller.js'
-const { sendMessage, getMessages } = require('../controllers/message.controller.js');
-// ---------------------------------------------
-
-// Ensure the path to your admin auth middleware is correct
-const { protectAdmin } = require('../middleware/adminAuth.js');
-
 const router = express.Router();
+const { check } = require('express-validator');
+const messageController = require('../controllers/message.controller');
+const { protect } = require('../middleware/authMiddleware');
 
-// --- Input Validation Middleware ---
-const isValidObjectId = (value) => mongoose.Types.ObjectId.isValid(value);
-const handleValidationErrors = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        console.error("Validation Errors:", errors.array());
-        return res.status(400).json({
-             message: 'Validation failed',
-             error: errors.array()[0]?.msg || 'Invalid input provided.'
-            });
-    }
-    next();
-};
-
-// --- Routes Definition ---
-
-// GET /api/messages/:peerId
-router.get(
-    '/:peerId',
-    protectAdmin,
-    param('peerId')
-        .custom(isValidObjectId)
-        .withMessage('Invalid Peer ID format.'),
-    handleValidationErrors,
-    getMessages
+// @route   POST /api/messages
+// @desc    Send a new message
+// @access  Private
+router.post(
+  '/:receiverId',
+  protect,
+  [
+    check('content', 'Message content is required').not().isEmpty(),
+    check('receiverId', 'Invalid receiver ID').isMongoId()
+  ],
+  messageController.sendMessage
 );
 
-// POST /api/messages/send/:peerId
-router.post(
-    '/send/:peerId',
-    protectAdmin,
-    param('peerId')
-         .custom(isValidObjectId)
-         .withMessage('Invalid Peer ID format.'),
-    // Add body validation here if needed
-    handleValidationErrors,
-    sendMessage
+// @route   GET /api/messages/conversation/:conversationId
+// @desc    Get messages in a conversation
+// @access  Private
+router.get(
+  '/conversation/:conversationId',
+  protect,
+  [
+    check('conversationId', 'Invalid conversation ID').isMongoId()
+  ],
+  messageController.getMessages
+);
+
+// @route   GET /api/messages/conversations
+// @desc    Get all conversations for current user
+// @access  Private
+router.get(
+  '/conversations',
+  protect,
+  messageController.getConversations
 );
 
 module.exports = router;

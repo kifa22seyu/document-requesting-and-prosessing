@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { useAuthContext } from './context/AuthContext';
+import ChatPage from './chat/chatPage';
 
 // Layout Components
 const RegistrarAdmin = React.lazy(() => import('./comp/admind'));
@@ -80,6 +81,7 @@ function App() {
 
           {/* Protected Routes */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
 
           {/* Company Dashboard */}
           <Route path="/company-dashboard" element={<ProtectedRoute><CompanyDashboard /></ProtectedRoute>}>

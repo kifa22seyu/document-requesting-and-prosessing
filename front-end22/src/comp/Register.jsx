@@ -197,7 +197,7 @@ function RegisterForm() {
           Object.keys(backendFieldErrors).forEach(key => {
             // Map backend error key to frontend formData key if possible
             // (This assumes backend keys like 'email', 'name', 'password' match frontend)
-            if (formData.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(formData, key)) {
               // Ensure the error message is a string
               fieldErrors[key] = Array.isArray(backendFieldErrors[key])
                 ? backendFieldErrors[key].join(' ')

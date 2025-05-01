@@ -23,6 +23,7 @@ import FinanceAdmin from './FinanceDashboard';
 import TeamAssociationDashboard from './TeamAssociationDashboard';
 import AdminRequestsView from './AdminRequestsView'; // The improved requests view
 import Chat from "../pages/home/Chat";  // Go up one level from `comp` to `src`
+import ChatPage from '../chat/chatPage';
 
 const Home = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -35,6 +36,7 @@ const Home = () => {
   return (
     <>
 export default FinanceAdmin;
+<ChatPage />
 <Chat />
 <AdminRequestsView />
 <TeamAssociationDashboard />

@@ -6,6 +6,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const path = require("path");
+const { initializeSocket } = require('./socket/socket');
+initializeSocket(server);
 const fs = require("fs");
 
 // --- Import Routes ---

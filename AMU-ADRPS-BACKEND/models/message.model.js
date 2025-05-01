@@ -1,26 +1,58 @@
-// File: models/message.model.js
-const mongoose = require("mongoose"); // Changed import
+const mongoose = require('mongoose');
 
-const messageSchema = new mongoose.Schema(
-  {
-    senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: ["User", "Adminrole", "Admin"], // Can reference any of these 3 models
-      required: true,
-    },
-    receiverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: ["User", "Adminrole", "Admin"], // Can reference any of these 3 models
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
+const messageSchema = new mongoose.Schema({
+  conversationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Conversation',
+    required: true
   },
-  { timestamps: true } // Adds createdAt and updatedAt automatically
-);
+  sender: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'senderModel'
+  },
+  senderModel: {
+    type: String,
+    required: true,
+    enum: ['User', 'Admin', 'Moderator']
+  },
+  receiver: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'receiverModel'
+  },
+  receiverModel: {
+    type: String,
+    required: true,
+    enum: ['User', 'Admin', 'Moderator']
+  },
+  content: {
+    type: String,
+    required: true,
+    trim: true,
+    maxlength: 2000
+  },
+  read: {
+    type: Boolean,
+    default: false
+  },
+  attachments: [{
+    url: String,
+    type: {
+      type: String,
+      enum: ['image', 'video', 'document', 'audio']
+    }
+  }]
+}, { 
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
 
-const Message = mongoose.model("Message", messageSchema);
+// Indexes for faster querying
+messageSchema.index({ conversationId: 1, createdAt: -1 });
+messageSchema.index({ sender: 1, receiver: 1 });
 
-module.exports = Message; // Changed export
+const Message = mongoose.model('Message', messageSchema);
+
+module.exports = Message;
